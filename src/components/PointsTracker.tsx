@@ -277,66 +277,86 @@ const PointsTracker = () => {
     <div className="grid md:grid-cols-3 gap-4">
       {currentClass.groups.map(group => (
         <div key={group.id} className="p-4 border-2 border-red-200 rounded-lg bg-white shadow-sm relative overflow-hidden">
-          <div className="flex items-center justify-between mb-2">
-            {editingType === 'group' && editingId === group.id ? (
-              <div className="flex gap-2">
-                <Input
-                  value={editingName}
-                  onChange={(e) => setEditingName(e.target.value)}
-                  className="w-40"
-                />
-                <Button onClick={saveEdit} className="bg-green-600">
-                  Save
-                </Button>
-                <Button onClick={() => setEditingId(null)} className="bg-red-600">
-                  Cancel
-                </Button>
-              </div>
-            ) : (
-              <h3 className="font-semibold flex items-center gap-1 cursor-pointer hover:text-red-700"
-                  onClick={() => startEditing(group.id, 'group', group.name)}>
-                {group.name}
-              </h3>
-            )}
-            <div className="relative">
-              <div 
-                className="absolute inset-0 bg-red-100 rounded-full transition-all duration-1000 ease-out"
-                style={{ 
-                  width: `${Math.min(100, group.points)}px`,
-                  height: '100%',
-                  transform: `scale(${1 + group.points * 0.01})` 
-                }}
-              />
-              <span className="text-2xl font-bold text-red-800 relative z-10 transition-all duration-300 transform hover:scale-110">
-                {group.points}
-              </span>
-            </div>
-          </div>
-          <StarDivider />
-          <div className="flex gap-2">
-            <Button 
-              onClick={() => adjustPoints('group', group.id, -1)}
-              variant="outline"
-              className="border-red-800 text-red-800 hover:bg-red-50 transform transition hover:scale-105"
-            >
-              -1
-            </Button>
-            <Button 
-              onClick={() => adjustPoints('group', group.id, 1)}
-              variant="outline"
-              className="border-red-800 text-red-800 hover:bg-red-50 transform transition hover:scale-105"
-            >
-              +1
-            </Button>
-            <Button 
-              onClick={() => adjustPoints('group', group.id, 5)}
-              variant="outline"
-              className="border-red-800 text-red-800 hover:bg-red-50 transform transition hover:scale-105"
-            >
-              +5
-            </Button>
-          </div>
-        </div>
+  <div className="flex items-center justify-between mb-2">
+    {editingType === 'group' && editingId === group.id ? (
+      <div className="flex gap-2">
+        <Input
+          value={editingName}
+          onChange={(e) => setEditingName(e.target.value)}
+          className="w-40"
+        />
+        <Button onClick={saveEdit} className="bg-green-600">
+          Save
+        </Button>
+        <Button onClick={() => setEditingId(null)} className="bg-red-600">
+          Cancel
+        </Button>
+      </div>
+    ) : (
+      <h3 className="font-semibold flex items-center gap-1 cursor-pointer hover:text-red-700"
+          onClick={() => startEditing(group.id, 'group', group.name)}>
+        {group.name}
+      </h3>
+    )}
+    <span className="text-2xl font-bold text-red-800">
+      {group.points}
+    </span>
+  </div>
+  
+  {/* Animated Star Divider */}
+  <div className="relative flex items-center my-4">
+    <div className="h-px bg-blue-800 flex-1" />
+    <div 
+      className="absolute w-full transition-all duration-500 ease-out"
+      style={{ 
+        left: `${Math.min(Math.max(group.points, -100), 100) / 2 + 50}%`,
+        transform: `translateX(-50%) scale(${1 + Math.abs(group.points) * 0.01})`
+      }}
+    >
+      <div className="text-red-700 text-2xl">★</div>
+    </div>
+    <div className="h-px bg-blue-800 flex-1" />
+  </div>
+
+  {/* Buttons with spacing */}
+  <div className="flex justify-between mt-4">
+    {/* Negative points group */}
+    <div className="flex gap-2">
+      <Button 
+        onClick={() => adjustPoints('group', group.id, -1)}
+        variant="outline"
+        className="border-red-800 text-red-800 hover:bg-red-50 transform transition hover:scale-105"
+      >
+        -1
+      </Button>
+      <Button 
+        onClick={() => adjustPoints('group', group.id, -5)}
+        variant="outline"
+        className="border-red-800 text-red-800 hover:bg-red-50 transform transition hover:scale-105"
+      >
+        -5
+      </Button>
+    </div>
+    
+    {/* Positive points group */}
+    <div className="flex gap-2">
+      <Button 
+        onClick={() => adjustPoints('group', group.id, 1)}
+        variant="outline"
+        className="border-red-800 text-red-800 hover:bg-red-50 transform transition hover:scale-105"
+      >
+        +1
+      </Button>
+      <Button 
+        onClick={() => adjustPoints('group', group.id, 5)}
+        variant="outline"
+        className="border-red-800 text-red-800 hover:bg-red-50 transform transition hover:scale-105"
+      >
+        +5
+      </Button>
+    </div>
+  </div>
+</div>
       ))}
     </div>
   </CardContent>
