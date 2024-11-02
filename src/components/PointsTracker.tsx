@@ -14,55 +14,61 @@ import {
   AlertDialogTitle,
 } from './ui/alert-dialog';
 
-// Load data from localStorage
-const loadStoredData = () => {
-  const storedData = localStorage.getItem('historyTrackerData');
-  if (storedData) {
-    try {
-      return JSON.parse(storedData);
-    } catch (e) {
-      console.error('Error loading stored data:', e);
-      return [];
-    }
-  }
-  return [];
-};
-
-// Save data to localStorage
-const saveToLocalStorage = (data: any) => {
-  try {
-    localStorage.setItem('historyTrackerData', JSON.stringify(data));
-  } catch (e) {
-    console.error('Error saving data:', e);
-  }
-};
-
 // Sound effects setup
-const playPointSound = () => {
-  const audio = new Audio('https://cdn.freesound.org/previews/242/242501_3509815-lq.mp3'); // coin sound
+const playPointSound = (isPositive: boolean) => {
+  const audio = new Audio(isPositive 
+    ? 'https://assets.mixkit.co/active_storage/sfx/2020/coin-collect-8.wav'
+    : 'https://assets.mixkit.co/active_storage/sfx/2021/lose-2.wav'
+  );
   audio.volume = 0.3;
   audio.play().catch(e => console.log('Sound play failed:', e));
 };
 
-const playGroupSound = () => {
-  const audio = new Audio('https://cdn.freesound.org/previews/242/242501_3509815-lq.mp3');
+const playGroupSound = (isPositive: boolean) => {
+  const audio = new Audio(isPositive 
+    ? 'https://assets.mixkit.co/active_storage/sfx/2020/coin-collect-8.wav'
+    : 'https://assets.mixkit.co/active_storage/sfx/2021/lose-2.wav'
+  );
   audio.volume = 0.2;
   audio.play().catch(e => console.log('Sound play failed:', e));
 };
 
 const PointsTracker = () => {
+  // Load data from localStorage
+  const loadStoredData = () => {
+    const storedData = localStorage.getItem('historyTrackerData');
+    if (storedData) {
+      try {
+        return JSON.parse(storedData);
+      } catch (e) {
+        console.error('Error loading stored data:', e);
+        return [];
+      }
+    }
+    return [];
+  };
+
+  // Save data to localStorage
+  const saveToLocalStorage = (data: any) => {
+    try {
+      localStorage.setItem('historyTrackerData', JSON.stringify(data));
+    } catch (e) {
+      console.error('Error saving data:', e);
+    }
+  };
+
   const [classes, setClasses] = useState(loadStoredData() || [
-  {
-    id: 1,
-    name: 'Period 1',
-    groups: [
-      { id: 1, name: 'Federalists', points: 0, students: [] },
-      { id: 2, name: 'Patriots', points: 0, students: [] },
-      { id: 3, name: 'Minutemen', points: 0, students: [] }
-    ],
-    students: []
-  }
-]);
+    {
+      id: 1,
+      name: 'Period 1',
+      groups: [
+        { id: 1, name: 'Federalists', points: 0, students: [] },
+        { id: 2, name: 'Patriots', points: 0, students: [] },
+        { id: 3, name: 'Minutemen', points: 0, students: [] }
+      ],
+      students: []
+    }
+  ]);
 
   const [currentClassId, setCurrentClassId] = useState(1);
   const [isTeacher, setIsTeacher] = useState(true);
@@ -73,11 +79,13 @@ const PointsTracker = () => {
   const [showResetDialog, setShowResetDialog] = useState(false);
   const [showEndYearDialog, setShowEndYearDialog] = useState(false);
 
+  // Save data when it changes
   useEffect(() => {
     saveToLocalStorage(classes);
   }, [classes]);
 
   const currentClass = classes.find(c => c.id === currentClassId);
+
   const addClass = () => {
     const newId = classes.length > 0 ? Math.max(...classes.map(c => c.id)) + 1 : 1;
     const newClass = {
@@ -148,39 +156,40 @@ const PointsTracker = () => {
   };
 
   const adjustPoints = (type: string, id: number, amount: number) => {
-  setClasses(classes.map(classItem => {
-    if (classItem.id === currentClassId) {
-      if (type === 'group') {
-        playPointSound();
-        return {
-          ...classItem,
-          groups: classItem.groups.map(group =>
-            group.id === id ? { ...group, points: Math.max(0, group.points + amount) } : group
-          )
-        };
-      } else { // student points adjustment
-        const student = classItem.students.find(s => s.id === id);
-        if (!student) return classItem;
+    const isPositive = amount > 0;
+    setClasses(classes.map(classItem => {
+      if (classItem.id === currentClassId) {
+        if (type === 'group') {
+          playPointSound(isPositive);
+          return {
+            ...classItem,
+            groups: classItem.groups.map(group =>
+              group.id === id ? { ...group, points: Math.max(0, group.points + amount) } : group
+            )
+          };
+        } else {
+          const student = classItem.students.find(s => s.id === id);
+          if (!student) return classItem;
 
-        playPointSound();
-        if (student.groupId) playGroupSound(); // Play both sounds if student is in a group
+          playPointSound(isPositive);
+          if (student.groupId) playGroupSound(isPositive);
 
-        return {
-          ...classItem,
-          students: classItem.students.map(student =>
-            student.id === id ? { ...student, points: Math.max(0, student.points + amount) } : student
-          ),
-          groups: classItem.groups.map(group =>
-            group.id === student.groupId 
-              ? { ...group, points: Math.max(0, group.points + amount) }
-              : group
-          )
-        };
+          return {
+            ...classItem,
+            students: classItem.students.map(student =>
+              student.id === id ? { ...student, points: Math.max(0, student.points + amount) } : student
+            ),
+            groups: classItem.groups.map(group =>
+              group.id === student.groupId 
+                ? { ...group, points: Math.max(0, group.points + amount) }
+                : group
+            )
+          };
+        }
       }
-    }
-    return classItem;
-  }));
-};
+      return classItem;
+    }));
+  };
 
   const startEditing = (id: number, type: string, currentName: string) => {
     setEditingId(id);
@@ -231,6 +240,7 @@ const PointsTracker = () => {
     setCurrentClassId(1);
     setShowEndYearDialog(false);
   };
+
   return (
     <div className="max-w-6xl mx-auto p-4 space-y-6 bg-slate-50">
       {/* Header */}
@@ -269,8 +279,9 @@ const PointsTracker = () => {
       </Card>
 
       {currentClass && (
+
         <>
-          {/* Group Points Section */}
+          {/* Group Points Section with Rankings */}
           <Card className="border-2 border-red-800">
             <CardHeader className="bg-red-50">
               <CardTitle className="flex items-center justify-between">
@@ -286,6 +297,37 @@ const PointsTracker = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
+              {/* Rankings Overview */}
+              <div className="mb-6 p-4 bg-blue-50 rounded-lg">
+                <h3 className="text-lg font-bold mb-2">Current Rankings</h3>
+                <div className="grid grid-cols-3 gap-4">
+                  {[...currentClass.groups]
+                    .sort((a, b) => b.points - a.points)
+                    .map((group, index) => (
+                      <div 
+                        key={group.id} 
+                        className={`p-2 rounded-lg flex items-center gap-2 ${
+                          index === 0 ? 'bg-yellow-100 border-2 border-yellow-400' :
+                          index === 1 ? 'bg-gray-100 border-2 border-gray-400' :
+                          index === 2 ? 'bg-orange-100 border-2 border-orange-400' :
+                          'bg-white border border-gray-200'
+                        }`}
+                      >
+                        <span className="text-2xl">
+                          {index === 0 ? '🏆' :
+                           index === 1 ? '🥈' :
+                           index === 2 ? '🥉' : ''}
+                        </span>
+                        <div>
+                          <div className="font-bold">{group.name}</div>
+                          <div className="text-sm text-gray-600">{group.points} points</div>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              </div>
+
+              {/* Group Cards */}
               <div className="grid md:grid-cols-3 gap-4">
                 {currentClass.groups.map(group => (
                   <div key={group.id} className="p-4 border-2 border-red-200 rounded-lg bg-white shadow-sm relative overflow-hidden">
@@ -329,7 +371,7 @@ const PointsTracker = () => {
                       <div className="h-px bg-blue-800 flex-1" />
                     </div>
 
-                    {/* Buttons with spacing */}
+                    {/* Points Buttons */}
                     <div className="flex justify-between mt-4">
                       {/* Negative points group */}
                       <div className="flex gap-2">
@@ -388,6 +430,7 @@ const PointsTracker = () => {
               </div>
             </CardContent>
           </Card>
+
           {/* Student Management Section */}
           <Card className="border-2 border-blue-800">
             <CardHeader className="bg-blue-50">
@@ -406,87 +449,83 @@ const PointsTracker = () => {
             <CardContent>
               <div className="grid md:grid-cols-3 gap-4">
                 {currentClass.students.map(student => (
-  <div key={student.id} className="p-4 border-2 border-blue-200 rounded-lg bg-white shadow-sm">
-    <div className="flex items-center justify-between mb-2">
-      {editingType === 'student' && editingId === student.id ? (
-        <div className="flex gap-2">
-          <Input
-            value={editingName}
-            onChange={(e) => setEditingName(e.target.value)}
-            className="w-40"
-          />
-          <Button onClick={saveEdit} className="bg-green-600">
-            Save
-          </Button>
-          <Button onClick={() => setEditingId(null)} className="bg-red-600">
-            Cancel
-          </Button>
-        </div>
-      ) : (
-        <h3 className="font-semibold cursor-pointer hover:text-blue-700"
-            onClick={() => startEditing(student.id, 'student', student.name)}>
-          {student.name}
-        </h3>
-      )}
-      <span className="text-xl font-bold text-blue-800">{student.points}</span>
-    </div>
-    
-    {/* Group Selection */}
-    <div className="mt-2 mb-4">
-      <select
-        className="w-full p-2 border rounded"
-        value={student.groupId || ''}
-        onChange={(e) => assignStudentToGroup(student.id, e.target.value ? Number(e.target.value) : null)}
-      >
-        <option value="">No Group</option>
-        {currentClass.groups.map(group => (
-          <option key={group.id} value={group.id}>
-            {group.name}
-          </option>
-        ))}
-      </select>
-    </div>
+                  <div key={student.id} className="p-4 border-2 border-blue-200 rounded-lg bg-white shadow-sm">
+                    <div className="flex items-center justify-between mb-2">
+                      {editingType === 'student' && editingId === student.id ? (
+                        <div className="flex gap-2">
+                          <Input
+                            value={editingName}
+                            onChange={(e) => setEditingName(e.target.value)}
+                            className="w-40"
+                          />
+                          <Button onClick={saveEdit} className="bg-green-600">
+                            Save
+                          </Button>
+                          <Button onClick={() => setEditingId(null)} className="bg-red-600">
+                            Cancel
+                          </Button>
+                        </div>
+                      ) : (
+                        <h3 className="font-semibold cursor-pointer hover:text-blue-700"
+                            onClick={() => startEditing(student.id, 'student', student.name)}>
+                          {student.name}
+                        </h3>
+                      )}
+                      <span className="text-xl font-bold text-blue-800">{student.points}</span>
+                    </div>
+                    
+                    <div className="mt-2 mb-4">
+                      <select
+                        className="w-full p-2 border rounded"
+                        value={student.groupId || ''}
+                        onChange={(e) => assignStudentToGroup(student.id, e.target.value ? Number(e.target.value) : null)}
+                      >
+                        <option value="">No Group</option>
+                        {currentClass.groups.map(group => (
+                          <option key={group.id} value={group.id}>
+                            {group.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
 
-    {/* Point Adjustment Buttons */}
-    <div className="flex justify-between mt-4">
-      {/* Negative points group */}
-      <div className="flex gap-2">
-        <Button 
-          onClick={() => adjustPoints('student', student.id, -1)}
-          variant="outline"
-          className="border-blue-800 text-blue-800 hover:bg-blue-50 transform transition hover:scale-105"
-        >
-          -1
-        </Button>
-        <Button 
-          onClick={() => adjustPoints('student', student.id, -5)}
-          variant="outline"
-          className="border-blue-800 text-blue-800 hover:bg-blue-50 transform transition hover:scale-105"
-        >
-          -5
-        </Button>
-      </div>
-      
-      {/* Positive points group */}
-      <div className="flex gap-2">
-        <Button 
-          onClick={() => adjustPoints('student', student.id, 1)}
-          variant="outline"
-          className="border-blue-800 text-blue-800 hover:bg-blue-50 transform transition hover:scale-105"
-        >
-          +1
-        </Button>
-        <Button 
-          onClick={() => adjustPoints('student', student.id, 5)}
-          variant="outline"
-          className="border-blue-800 text-blue-800 hover:bg-blue-50 transform transition hover:scale-105"
-        >
-          +5
-        </Button>
-      </div>
-    </div>
-  </div>
-))}
+                    {/* Student Point Buttons */}
+                    <div className="flex justify-between mt-4">
+                      <div className="flex gap-2">
+                        <Button 
+                          onClick={() => adjustPoints('student', student.id, -1)}
+                          variant="outline"
+                          className="border-blue-800 text-blue-800 hover:bg-blue-50 transform transition hover:scale-105"
+                        >
+                          -1
+                        </Button>
+                        <Button 
+                          onClick={() => adjustPoints('student', student.id, -5)}
+                          variant="outline"
+                          className="border-blue-800 text-blue-800 hover:bg-blue-50 transform transition hover:scale-105"
+                        >
+                          -5
+                        </Button>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button 
+                          onClick={() => adjustPoints('student', student.id, 1)}
+                          variant="outline"
+                          className="border-blue-800 text-blue-800 hover:bg-blue-50 transform transition hover:scale-105"
+                        >
+                          +1
+                        </Button>
+                        <Button 
+                          onClick={() => adjustPoints('student', student.id, 5)}
+                          variant="outline"
+                          className="border-blue-800 text-blue-800 hover:bg-blue-50 transform transition hover:scale-105"
+                        >
+                          +5
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </CardContent>
           </Card>
