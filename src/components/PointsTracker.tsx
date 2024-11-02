@@ -344,62 +344,88 @@ const PointsTracker = () => {
         </>
       )}
 
-      {/* Reset Game Dialog */}
-      <AlertDialog open={showResetDialog} onOpenChange={setShowResetDialog}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Reset Current Game?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This will clear all groups and reset all points to zero. Student
-              names and class information will be preserved. This action cannot
-              be undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setShowResetDialog(false)}>
-              Cancel
-            </AlertDialogCancel>
-            <AlertDialogAction
-              onClick={resetGame}
-              className="bg-red-600 hover:bg-red-700"
-            >
-              Reset Game
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      {/* Reset Options */}
+<Card className="border-2 border-blue-800">
+  <CardHeader className="bg-blue-50">
+    <CardTitle className="flex items-center gap-2">
+      Reset Options
+    </CardTitle>
+  </CardHeader>
+  <CardContent className="space-y-4">
+    <div className="flex gap-4">
+      <Button 
+        onClick={() => setShowResetDialog(true)}
+        variant="outline"
+        className="border-red-800 text-red-800 hover:bg-red-50"
+      >
+        Reset Current Game
+      </Button>
+      <Button 
+        onClick={() => setShowEndYearDialog(true)}
+        className="bg-red-600 hover:bg-red-700"
+      >
+        End School Year
+      </Button>
+    </div>
+  </CardContent>
+</Card>
 
-      {/* End Year Dialog */}
-      <AlertDialog open={showEndYearDialog} onOpenChange={setShowEndYearDialog}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle className="text-red-600">
-              End School Year?
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              This will clear ALL data, including:
-              <ul className="list-disc list-inside mt-2 space-y-1">
-                <li>All classes</li>
-                <li>All student names</li>
-                <li>All groups</li>
-                <li>All points</li>
-              </ul>
-              This action cannot be undone. Are you sure you want to continue?
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setShowEndYearDialog(false)}>
-              Cancel
-            </AlertDialogCancel>
-            <AlertDialogAction
-              onClick={endYear}
-              className="bg-red-600 hover:bg-red-700"
-            >
-              Clear All Data
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+{/* Reset Game Dialog */}
+<AlertDialog open={showResetDialog} onOpenChange={setShowResetDialog}>
+  <AlertDialogContent>
+    <AlertDialogHeader>
+      <AlertDialogTitle>Reset Current Game?</AlertDialogTitle>
+      <AlertDialogDescription>
+        This will clear all groups and reset all points to zero. 
+        Student names and class information will be preserved. 
+        This action cannot be undone.
+      </AlertDialogDescription>
+    </AlertDialogHeader>
+    <AlertDialogFooter>
+      <AlertDialogCancel onClick={() => setShowResetDialog(false)}>
+        Cancel
+      </AlertDialogCancel>
+      <AlertDialogAction 
+        onClick={resetGame}
+        className="bg-red-600 hover:bg-red-700"
+      >
+        Reset Game
+      </AlertDialogAction>
+    </AlertDialogFooter>
+  </AlertDialogContent>
+</AlertDialog>
+
+{/* End Year Dialog */}
+<AlertDialog open={showEndYearDialog} onOpenChange={setShowEndYearDialog}>
+  <AlertDialogContent>
+    <AlertDialogHeader>
+      <AlertDialogTitle className="text-red-600">
+        End School Year?
+      </AlertDialogTitle>
+      <AlertDialogDescription>
+        This will clear ALL data, including:
+        <ul className="list-disc list-inside mt-2 space-y-1">
+          <li>All classes</li>
+          <li>All student names</li>
+          <li>All groups</li>
+          <li>All points</li>
+        </ul>
+        This action cannot be undone. Are you sure you want to continue?
+      </AlertDialogDescription>
+    </AlertDialogHeader>
+    <AlertDialogFooter>
+      <AlertDialogCancel onClick={() => setShowEndYearDialog(false)}>
+        Cancel
+      </AlertDialogCancel>
+      <AlertDialogAction 
+        onClick={endYear}
+        className="bg-red-600 hover:bg-red-700"
+      >
+        Clear All Data
+      </AlertDialogAction>
+    </AlertDialogFooter>
+  </AlertDialogContent>
+</AlertDialog>
     </div>
   );
 };
