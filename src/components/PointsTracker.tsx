@@ -307,10 +307,9 @@ const PointsTracker = () => {
   <div className="relative flex items-center my-4">
     <div className="h-px bg-blue-800 flex-1" />
     <div 
-      className="absolute w-full transition-all duration-500 ease-out"
+      className="mx-2 transition-all duration-500 ease-out"
       style={{ 
-        left: `${Math.min(Math.max(group.points, -100), 100) / 2 + 50}%`,
-        transform: `translateX(-50%) scale(${1 + Math.abs(group.points) * 0.01})`
+        transform: `scale(${1 + Math.abs(group.points) * 0.02})`
       }}
     >
       <div className="text-red-700 text-2xl">★</div>
