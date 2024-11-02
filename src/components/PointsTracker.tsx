@@ -15,58 +15,12 @@ import {
 } from './ui/alert-dialog';
 
 const playPointSound = (isPositive: boolean) => {
-  try {
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    const oscillator = audioContext.createOscillator();
-    const gainNode = audioContext.createGain();
-    
-    oscillator.connect(gainNode);
-    gainNode.connect(audioContext.destination);
-
-    if (isPositive) {
-      // "Liberty Bell" style ring - higher pitch, longer duration
-      oscillator.frequency.value = 1200;
-      gainNode.gain.value = 0.1;
-      oscillator.start();
-      oscillator.stop(audioContext.currentTime + 0.15);
-    } else {
-      // "Cannon fire" style - lower frequency, shorter burst
-      oscillator.frequency.value = 100;
-      gainNode.gain.value = 0.15;
-      oscillator.start();
-      oscillator.stop(audioContext.currentTime + 0.08);
-    }
-  } catch (e) {
-    console.log('Sound play failed:', e);
-  }
-};
-
-const playGroupSound = (isPositive: boolean) => {
-  // Similar sounds but slightly lower volume for groups
-  try {
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    const oscillator = audioContext.createOscillator();
-    const gainNode = audioContext.createGain();
-    
-    oscillator.connect(gainNode);
-    gainNode.connect(audioContext.destination);
-
-    if (isPositive) {
-      // "Liberty Bell" style ring - slightly softer
-      oscillator.frequency.value = 1200;
-      gainNode.gain.value = 0.08;
-      oscillator.start();
-      oscillator.stop(audioContext.currentTime + 0.15);
-    } else {
-      // "Cannon fire" style - slightly softer
-      oscillator.frequency.value = 100;
-      gainNode.gain.value = 0.12;
-      oscillator.start();
-      oscillator.stop(audioContext.currentTime + 0.08);
-    }
-  } catch (e) {
-    console.log('Sound play failed:', e);
-  }
+  const audio = new Audio(isPositive 
+    ? '/sounds/gain.mp3'     // or whatever filename you choose
+    : '/sounds/lose.mp3'
+  );
+  audio.volume = 0.3;
+  audio.play().catch(e => console.log('Sound play failed:', e));
 };
 
 const PointsTracker = () => {
