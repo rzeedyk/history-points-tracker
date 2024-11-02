@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
@@ -14,38 +14,54 @@ import {
   AlertDialogTitle,
 } from './ui/alert-dialog';
 
-const PointsTracker = () => {
-  const [classes, setClasses] = useState([
-    {
-      id: 1,
-      name: 'Period 1',
-      groups: [
-        { 
-          id: 1, 
-          name: 'Federalists', 
-          points: 0,
-          students: []
-        },
-        { 
-          id: 2, 
-          name: 'Patriots', 
-          points: 0,
-          students: []
-        },
-        { 
-          id: 3, 
-          name: 'Minutemen', 
-          points: 0,
-          students: []
-        }
-      ],
-      students: [
-        { id: 1, name: 'Student 1', points: 0, groupId: null },
-        { id: 2, name: 'Student 2', points: 0, groupId: null },
-        { id: 3, name: 'Student 3', points: 0, groupId: null }
-      ]
+// Load data from localStorage
+const loadStoredData = () => {
+  const storedData = localStorage.getItem('historyTrackerData');
+  if (storedData) {
+    try {
+      return JSON.parse(storedData);
+    } catch (e) {
+      console.error('Error loading stored data:', e);
+      return [];
     }
-  ]);
+  }
+  return [];
+};
+
+// Save data to localStorage
+const saveToLocalStorage = (data: any) => {
+  try {
+    localStorage.setItem('historyTrackerData', JSON.stringify(data));
+  } catch (e) {
+    console.error('Error saving data:', e);
+  }
+};
+
+const playPointSound = () => {
+  const audio = new Audio('https://cdn.freesound.org/previews/242/242501_3509815-lq.mp3'); // coin sound
+  audio.volume = 0.3;
+  audio.play().catch(e => console.log('Sound play failed:', e));
+};
+
+const playGroupSound = () => {
+  const audio = new Audio('https://cdn.freesound.org/previews/270/270404_5123851-lq.mp3'); // power-up sound
+  audio.volume = 0.2;
+  audio.play().catch(e => console.log('Sound play failed:', e));
+};
+
+const PointsTracker = () => {
+  const [classes, setClasses] = useState(loadStoredData() || [
+  {
+    id: 1,
+    name: 'Period 1',
+    groups: [
+      { id: 1, name: 'Federalists', points: 0, students: [] },
+      { id: 2, name: 'Patriots', points: 0, students: [] },
+      { id: 3, name: 'Minutemen', points: 0, students: [] }
+    ],
+    students: []
+  }
+]);
 
   const [currentClassId, setCurrentClassId] = useState(1);
   const [isTeacher, setIsTeacher] = useState(true);
@@ -55,6 +71,10 @@ const PointsTracker = () => {
   const [showTeamNameSuggestions, setShowTeamNameSuggestions] = useState(false);
   const [showResetDialog, setShowResetDialog] = useState(false);
   const [showEndYearDialog, setShowEndYearDialog] = useState(false);
+
+  useEffect(() => {
+    saveToLocalStorage(classes);
+  }, [classes]);
 
   const currentClass = classes.find(c => c.id === currentClassId);
   const addClass = () => {
@@ -130,6 +150,7 @@ const PointsTracker = () => {
   setClasses(classes.map(classItem => {
     if (classItem.id === currentClassId) {
       if (type === 'group') {
+        playGroupSound();
         return {
           ...classItem,
           groups: classItem.groups.map(group =>
@@ -140,7 +161,9 @@ const PointsTracker = () => {
         const student = classItem.students.find(s => s.id === id);
         if (!student) return classItem;
 
-        // Update both student and their group (if they're in one)
+        playPointSound();
+        if (student.groupId) playGroupSound(); // Play both sounds if student is in a group
+
         return {
           ...classItem,
           students: classItem.students.map(student =>
