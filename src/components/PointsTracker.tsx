@@ -22,18 +22,27 @@ const playPointSound = (isPositive: boolean) => {
     
     oscillator.connect(gainNode);
     gainNode.connect(audioContext.destination);
-    
-    oscillator.frequency.value = isPositive ? 800 : 300;  // higher pitch for success
-    gainNode.gain.value = 0.1;  // volume
-    
-    oscillator.start();
-    oscillator.stop(audioContext.currentTime + 0.1);  // short beep
+
+    if (isPositive) {
+      // "Liberty Bell" style ring - higher pitch, longer duration
+      oscillator.frequency.value = 1200;
+      gainNode.gain.value = 0.1;
+      oscillator.start();
+      oscillator.stop(audioContext.currentTime + 0.15);
+    } else {
+      // "Cannon fire" style - lower frequency, shorter burst
+      oscillator.frequency.value = 100;
+      gainNode.gain.value = 0.15;
+      oscillator.start();
+      oscillator.stop(audioContext.currentTime + 0.08);
+    }
   } catch (e) {
     console.log('Sound play failed:', e);
   }
 };
 
 const playGroupSound = (isPositive: boolean) => {
+  // Similar sounds but slightly lower volume for groups
   try {
     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
     const oscillator = audioContext.createOscillator();
@@ -41,12 +50,20 @@ const playGroupSound = (isPositive: boolean) => {
     
     oscillator.connect(gainNode);
     gainNode.connect(audioContext.destination);
-    
-    oscillator.frequency.value = isPositive ? 600 : 200;  // slightly different frequencies for groups
-    gainNode.gain.value = 0.08;  // slightly lower volume
-    
-    oscillator.start();
-    oscillator.stop(audioContext.currentTime + 0.1);
+
+    if (isPositive) {
+      // "Liberty Bell" style ring - slightly softer
+      oscillator.frequency.value = 1200;
+      gainNode.gain.value = 0.08;
+      oscillator.start();
+      oscillator.stop(audioContext.currentTime + 0.15);
+    } else {
+      // "Cannon fire" style - slightly softer
+      oscillator.frequency.value = 100;
+      gainNode.gain.value = 0.12;
+      oscillator.start();
+      oscillator.stop(audioContext.currentTime + 0.08);
+    }
   } catch (e) {
     console.log('Sound play failed:', e);
   }
