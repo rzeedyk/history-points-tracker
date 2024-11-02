@@ -148,11 +148,10 @@ const PointsTracker = () => {
   };
 
   const adjustPoints = (type: string, id: number, amount: number) => {
-  const isPositive = amount > 0;
   setClasses(classes.map(classItem => {
     if (classItem.id === currentClassId) {
       if (type === 'group') {
-        playPointSound(isPositive);
+        playPointSound();
         return {
           ...classItem,
           groups: classItem.groups.map(group =>
@@ -163,8 +162,8 @@ const PointsTracker = () => {
         const student = classItem.students.find(s => s.id === id);
         if (!student) return classItem;
 
-        playPointSound(isPositive);
-        if (student.groupId) playGroupSound(isPositive); // Play both sounds if student is in a group
+        playPointSound();
+        if (student.groupId) playGroupSound(); // Play both sounds if student is in a group
 
         return {
           ...classItem,
