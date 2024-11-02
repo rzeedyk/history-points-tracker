@@ -258,98 +258,89 @@ const PointsTracker = () => {
       </Card>
       {currentClass && (
         <>
-          {/* Group Points Section */}
-          {currentClass.groups.map(group => (
-  <div key={group.id} className="p-4 border-2 border-red-200 rounded-lg bg-white shadow-sm relative overflow-hidden">
-    <div className="flex items-center justify-between mb-2">
-      {editingType === 'group' && editingId === group.id ? (
-        <div className="flex gap-2">
-          <Input
-            value={editingName}
-            onChange={(e) => setEditingName(e.target.value)}
-            className="w-40"
-          />
-          <Button onClick={saveEdit} className="bg-green-600">
-            Save
-          </Button>
-          <Button onClick={() => setEditingId(null)} className="bg-red-600">
-            Cancel
-          </Button>
-        </div>
-      ) : (
-        <h3 className="font-semibold flex items-center gap-1 cursor-pointer hover:text-red-700"
-            onClick={() => startEditing(group.id, 'group', group.name)}>
-          {group.name}
-        </h3>
-      )}
-      <div className="relative">
-        <div 
-          className="absolute inset-0 bg-red-100 rounded-full transition-all duration-1000 ease-out"
-          style={{ 
-            width: `${Math.min(100, group.points)}px`,
-            height: '100%',
-            transform: `scale(${1 + group.points * 0.01})` 
-          }}
-        />
-        <span className="text-2xl font-bold text-red-800 relative z-10 transition-all duration-300 transform hover:scale-110">
-          {group.points}
-        </span>
+         {/* Group Points Section */}
+<Card className="border-2 border-red-800">
+  <CardHeader className="bg-red-50">
+    <CardTitle className="flex items-center justify-between">
+      <div className="flex items-center gap-2">
+        Group Points - {currentClass.name}
       </div>
-    </div>
-    <StarDivider />
-    <div className="flex gap-2">
       <Button 
-        onClick={() => adjustPoints('group', group.id, -1)}
-        variant="outline"
-        className="border-red-800 text-red-800 hover:bg-red-50 transform transition hover:scale-105"
+        onClick={addGroup} 
+        className="bg-red-700 hover:bg-red-800"
       >
-        -1
+        Add Group
       </Button>
-      <Button 
-        onClick={() => adjustPoints('group', group.id, 1)}
-        variant="outline"
-        className="border-red-800 text-red-800 hover:bg-red-50 transform transition hover:scale-105"
-      >
-        +1
-      </Button>
-      <Button 
-        onClick={() => adjustPoints('group', group.id, 5)}
-        variant="outline"
-        className="border-red-800 text-red-800 hover:bg-red-50 transform transition hover:scale-105"
-      >
-        +5
-      </Button>
-    </div>
-  </div>
-))}
-              </div>
-            </CardContent>
-          </Card>
-          {/* Reset Options */}
-          <Card className="border-2 border-blue-800">
-            <CardHeader className="bg-blue-50">
-              <CardTitle className="flex items-center gap-2">
-                Reset Options
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex gap-4">
-                <Button
-                  onClick={() => setShowResetDialog(true)}
-                  variant="outline"
-                  className="border-red-800 text-red-800 hover:bg-red-50"
-                >
-                  Reset Current Game
+    </CardTitle>
+  </CardHeader>
+  <CardContent>
+    <div className="grid md:grid-cols-3 gap-4">
+      {currentClass.groups.map(group => (
+        <div key={group.id} className="p-4 border-2 border-red-200 rounded-lg bg-white shadow-sm relative overflow-hidden">
+          <div className="flex items-center justify-between mb-2">
+            {editingType === 'group' && editingId === group.id ? (
+              <div className="flex gap-2">
+                <Input
+                  value={editingName}
+                  onChange={(e) => setEditingName(e.target.value)}
+                  className="w-40"
+                />
+                <Button onClick={saveEdit} className="bg-green-600">
+                  Save
                 </Button>
-                <Button
-                  onClick={() => setShowEndYearDialog(true)}
-                  className="bg-red-600 hover:bg-red-700"
-                >
-                  End School Year
+                <Button onClick={() => setEditingId(null)} className="bg-red-600">
+                  Cancel
                 </Button>
               </div>
-            </CardContent>
-          </Card>
+            ) : (
+              <h3 className="font-semibold flex items-center gap-1 cursor-pointer hover:text-red-700"
+                  onClick={() => startEditing(group.id, 'group', group.name)}>
+                {group.name}
+              </h3>
+            )}
+            <div className="relative">
+              <div 
+                className="absolute inset-0 bg-red-100 rounded-full transition-all duration-1000 ease-out"
+                style={{ 
+                  width: `${Math.min(100, group.points)}px`,
+                  height: '100%',
+                  transform: `scale(${1 + group.points * 0.01})` 
+                }}
+              />
+              <span className="text-2xl font-bold text-red-800 relative z-10 transition-all duration-300 transform hover:scale-110">
+                {group.points}
+              </span>
+            </div>
+          </div>
+          <StarDivider />
+          <div className="flex gap-2">
+            <Button 
+              onClick={() => adjustPoints('group', group.id, -1)}
+              variant="outline"
+              className="border-red-800 text-red-800 hover:bg-red-50 transform transition hover:scale-105"
+            >
+              -1
+            </Button>
+            <Button 
+              onClick={() => adjustPoints('group', group.id, 1)}
+              variant="outline"
+              className="border-red-800 text-red-800 hover:bg-red-50 transform transition hover:scale-105"
+            >
+              +1
+            </Button>
+            <Button 
+              onClick={() => adjustPoints('group', group.id, 5)}
+              variant="outline"
+              className="border-red-800 text-red-800 hover:bg-red-50 transform transition hover:scale-105"
+            >
+              +5
+            </Button>
+          </div>
+        </div>
+      ))}
+    </div>
+  </CardContent>
+</Card>
         </>
       )}
 
