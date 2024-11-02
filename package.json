@@ -1,45 +1,32 @@
 {
-  "name": "react-typescript",
-  "version": "1.0.0",
-  "description": "React and TypeScript example starter project",
-  "keywords": [
-    "typescript",
-    "react",
-    "starter"
-  ],
-  "main": "src/index.tsx",
-  "dependencies": {
-    "loader-utils": "3.2.1",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "react-scripts": "5.0.1",
-    "clsx": "2.1.1",
-    "tailwind-merge": "2.5.4",
-    "class-variance-authority": "0.7.0"
-  },
-  "devDependencies": {
-    "@types/react": "18.2.38",
-    "@types/react-dom": "18.2.15",
-    "typescript": "4.4.4",
-    "@radix-ui/react-alert-dialog": "latest",
-    "@radix-ui/react-select": "latest",
-    "@radix-ui/react-slot": "latest",
-    "class-variance-authority": "latest",
-    "clsx": "latest",
-    "lucide-react": "latest",
-    "tailwind-merge": "latest",
-    "tailwindcss-animate": "latest"
-  },
+  "name": "history-points-tracker",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "homepage": "https://rzeedyk.github.io/history-points-tracker",
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ]
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "clsx": "^2.0.0",
+    "tailwind-merge": "^2.0.0",
+    "class-variance-authority": "^0.7.0",
+    "lucide-react": "^0.294.0",
+    "tailwindcss-animate": "^1.0.7",
+    "@types/node": "^20.10.0",
+    "@types/react": "^18.2.39",
+    "@types/react-dom": "^18.2.17",
+    "@vitejs/plugin-react": "^4.2.0",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.31",
+    "tailwindcss": "^3.3.5",
+    "typescript": "^5.3.2",
+    "vite": "^5.0.0"
+  }
 }
