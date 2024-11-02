@@ -14,23 +14,42 @@ import {
   AlertDialogTitle,
 } from './ui/alert-dialog';
 
-// Sound effects setup
 const playPointSound = (isPositive: boolean) => {
-  const audio = new Audio(isPositive 
-    ? 'https://assets.mixkit.co/active_storage/sfx/2020/coin-collect-8.wav'
-    : 'https://assets.mixkit.co/active_storage/sfx/2021/lose-2.wav'
-  );
-  audio.volume = 0.3;
-  audio.play().catch(e => console.log('Sound play failed:', e));
+  try {
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    oscillator.frequency.value = isPositive ? 800 : 300;  // higher pitch for success
+    gainNode.gain.value = 0.1;  // volume
+    
+    oscillator.start();
+    oscillator.stop(audioContext.currentTime + 0.1);  // short beep
+  } catch (e) {
+    console.log('Sound play failed:', e);
+  }
 };
 
 const playGroupSound = (isPositive: boolean) => {
-  const audio = new Audio(isPositive 
-    ? 'https://assets.mixkit.co/active_storage/sfx/2020/coin-collect-8.wav'
-    : 'https://assets.mixkit.co/active_storage/sfx/2021/lose-2.wav'
-  );
-  audio.volume = 0.2;
-  audio.play().catch(e => console.log('Sound play failed:', e));
+  try {
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    oscillator.frequency.value = isPositive ? 600 : 200;  // slightly different frequencies for groups
+    gainNode.gain.value = 0.08;  // slightly lower volume
+    
+    oscillator.start();
+    oscillator.stop(audioContext.currentTime + 0.1);
+  } catch (e) {
+    console.log('Sound play failed:', e);
+  }
 };
 
 const PointsTracker = () => {
