@@ -37,26 +37,29 @@ const saveToLocalStorage = (data: any) => {
   }
 };
 
+// Sound effects setup
 const playPointSound = (isPositive: boolean) => {
-  const positiveSound = 'https://cdn.freesound.org/previews/242/242501_3509815-lq.mp3';
-  const negativeSound = 'https://cdn.freesound.org/previews/411/411089_5121236-lq.mp3';
-  
-  const audio = new Audio(isPositive ? positiveSound : negativeSound);
-  audio.volume = 0.3;
-  audio.play()
-    .then(() => console.log('Sound played successfully:', isPositive ? 'positive' : 'negative'))
-    .catch(e => console.log('Sound play failed:', e));
+  if (isPositive) {
+    const audio = new Audio('https://cdn.freesound.org/previews/242/242501_3509815-lq.mp3');
+    audio.volume = 0.3;
+    audio.play().catch(e => console.log('Sound play failed:', e));
+  } else {
+    const audio = new Audio('https://cdn.freesound.org/previews/411/411089_5121236-lq.mp3');
+    audio.volume = 0.3;
+    audio.play().catch(e => console.log('Sound play failed:', e));
+  }
 };
 
 const playGroupSound = (isPositive: boolean) => {
-  const positiveSound = 'https://cdn.freesound.org/previews/242/242501_3509815-lq.mp3';
-  const negativeSound = 'https://cdn.freesound.org/previews/411/411089_5121236-lq.mp3';
-  
-  const audio = new Audio(isPositive ? positiveSound : negativeSound);
-  audio.volume = 0.2;
-  audio.play()
-    .then(() => console.log('Sound played successfully:', isPositive ? 'positive' : 'negative'))
-    .catch(e => console.log('Sound play failed:', e));
+  if (isPositive) {
+    const audio = new Audio('https://cdn.freesound.org/previews/242/242501_3509815-lq.mp3');
+    audio.volume = 0.2;
+    audio.play().catch(e => console.log('Sound play failed:', e));
+  } else {
+    const audio = new Audio('https://cdn.freesound.org/previews/411/411089_5121236-lq.mp3');
+    audio.volume = 0.2;
+    audio.play().catch(e => console.log('Sound play failed:', e));
+  }
 };
 
 const PointsTracker = () => {
