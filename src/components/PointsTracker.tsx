@@ -127,27 +127,36 @@ const PointsTracker = () => {
   };
 
   const adjustPoints = (type: string, id: number, amount: number) => {
-    setClasses(classes.map(classItem => {
-      if (classItem.id === currentClassId) {
-        if (type === 'group') {
-          return {
-            ...classItem,
-            groups: classItem.groups.map(group =>
-              group.id === id ? { ...group, points: Math.max(0, group.points + amount) } : group
-            )
-          };
-        } else {
-          return {
-            ...classItem,
-            students: classItem.students.map(student =>
-              student.id === id ? { ...student, points: Math.max(0, student.points + amount) } : student
-            )
-          };
-        }
+  setClasses(classes.map(classItem => {
+    if (classItem.id === currentClassId) {
+      if (type === 'group') {
+        return {
+          ...classItem,
+          groups: classItem.groups.map(group =>
+            group.id === id ? { ...group, points: Math.max(0, group.points + amount) } : group
+          )
+        };
+      } else { // student points adjustment
+        const student = classItem.students.find(s => s.id === id);
+        if (!student) return classItem;
+
+        // Update both student and their group (if they're in one)
+        return {
+          ...classItem,
+          students: classItem.students.map(student =>
+            student.id === id ? { ...student, points: Math.max(0, student.points + amount) } : student
+          ),
+          groups: classItem.groups.map(group =>
+            group.id === student.groupId 
+              ? { ...group, points: Math.max(0, group.points + amount) }
+              : group
+          )
+        };
       }
-      return classItem;
-    }));
-  };
+    }
+    return classItem;
+  }));
+};
 
   const startEditing = (id: number, type: string, currentName: string) => {
     setEditingId(id);
