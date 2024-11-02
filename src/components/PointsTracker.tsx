@@ -373,46 +373,87 @@ const PointsTracker = () => {
             <CardContent>
               <div className="grid md:grid-cols-3 gap-4">
                 {currentClass.students.map(student => (
-                  <div key={student.id} className="p-4 border-2 border-blue-200 rounded-lg bg-white shadow-sm">
-                    <div className="flex items-center justify-between mb-2">
-                      {editingType === 'student' && editingId === student.id ? (
-                        <div className="flex gap-2">
-                          <Input
-                            value={editingName}
-                            onChange={(e) => setEditingName(e.target.value)}
-                            className="w-40"
-                          />
-                          <Button onClick={saveEdit} className="bg-green-600">
-                            Save
-                          </Button>
-                          <Button onClick={() => setEditingId(null)} className="bg-red-600">
-                            Cancel
-                          </Button>
-                        </div>
-                      ) : (
-                        <h3 className="font-semibold cursor-pointer hover:text-blue-700"
-                            onClick={() => startEditing(student.id, 'student', student.name)}>
-                          {student.name}
-                        </h3>
-                      )}
-                      <span className="text-xl font-bold text-blue-800">{student.points}</span>
-                    </div>
-                    <div className="mt-2">
-                      <select
-                        className="w-full p-2 border rounded"
-                        value={student.groupId || ''}
-                        onChange={(e) => assignStudentToGroup(student.id, e.target.value ? Number(e.target.value) : null)}
-                      >
-                        <option value="">No Group</option>
-                        {currentClass.groups.map(group => (
-                          <option key={group.id} value={group.id}>
-                            {group.name}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-                ))}
+  <div key={student.id} className="p-4 border-2 border-blue-200 rounded-lg bg-white shadow-sm">
+    <div className="flex items-center justify-between mb-2">
+      {editingType === 'student' && editingId === student.id ? (
+        <div className="flex gap-2">
+          <Input
+            value={editingName}
+            onChange={(e) => setEditingName(e.target.value)}
+            className="w-40"
+          />
+          <Button onClick={saveEdit} className="bg-green-600">
+            Save
+          </Button>
+          <Button onClick={() => setEditingId(null)} className="bg-red-600">
+            Cancel
+          </Button>
+        </div>
+      ) : (
+        <h3 className="font-semibold cursor-pointer hover:text-blue-700"
+            onClick={() => startEditing(student.id, 'student', student.name)}>
+          {student.name}
+        </h3>
+      )}
+      <span className="text-xl font-bold text-blue-800">{student.points}</span>
+    </div>
+    
+    {/* Group Selection */}
+    <div className="mt-2 mb-4">
+      <select
+        className="w-full p-2 border rounded"
+        value={student.groupId || ''}
+        onChange={(e) => assignStudentToGroup(student.id, e.target.value ? Number(e.target.value) : null)}
+      >
+        <option value="">No Group</option>
+        {currentClass.groups.map(group => (
+          <option key={group.id} value={group.id}>
+            {group.name}
+          </option>
+        ))}
+      </select>
+    </div>
+
+    {/* Point Adjustment Buttons */}
+    <div className="flex justify-between mt-4">
+      {/* Negative points group */}
+      <div className="flex gap-2">
+        <Button 
+          onClick={() => adjustPoints('student', student.id, -1)}
+          variant="outline"
+          className="border-blue-800 text-blue-800 hover:bg-blue-50 transform transition hover:scale-105"
+        >
+          -1
+        </Button>
+        <Button 
+          onClick={() => adjustPoints('student', student.id, -5)}
+          variant="outline"
+          className="border-blue-800 text-blue-800 hover:bg-blue-50 transform transition hover:scale-105"
+        >
+          -5
+        </Button>
+      </div>
+      
+      {/* Positive points group */}
+      <div className="flex gap-2">
+        <Button 
+          onClick={() => adjustPoints('student', student.id, 1)}
+          variant="outline"
+          className="border-blue-800 text-blue-800 hover:bg-blue-50 transform transition hover:scale-105"
+        >
+          +1
+        </Button>
+        <Button 
+          onClick={() => adjustPoints('student', student.id, 5)}
+          variant="outline"
+          className="border-blue-800 text-blue-800 hover:bg-blue-50 transform transition hover:scale-105"
+        >
+          +5
+        </Button>
+      </div>
+    </div>
+  </div>
+))}
               </div>
             </CardContent>
           </Card>
