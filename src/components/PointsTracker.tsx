@@ -38,21 +38,25 @@ const saveToLocalStorage = (data: any) => {
 };
 
 const playPointSound = (isPositive: boolean) => {
-  const audio = new Audio(isPositive 
-    ? 'https://cdn.freesound.org/previews/242/242501_3509815-lq.mp3'
-    : 'https://cdn.freesound.org/previews/411/411089_5121236-lq.mp3'
-  );
-  audio.volume = 0.2;
-  audio.play().catch(e => console.log('Sound play failed:', e));
+  const positiveSound = 'https://cdn.freesound.org/previews/242/242501_3509815-lq.mp3';
+  const negativeSound = 'https://cdn.freesound.org/previews/411/411089_5121236-lq.mp3';
+  
+  const audio = new Audio(isPositive ? positiveSound : negativeSound);
+  audio.volume = 0.3;
+  audio.play()
+    .then(() => console.log('Sound played successfully:', isPositive ? 'positive' : 'negative'))
+    .catch(e => console.log('Sound play failed:', e));
 };
 
 const playGroupSound = (isPositive: boolean) => {
-  const audio = new Audio(isPositive 
-    ? 'https://cdn.freesound.org/previews/242/242501_3509815-lq.mp3'
-    : 'https://cdn.freesound.org/previews/411/411089_5121236-lq.mp3'
-  );
+  const positiveSound = 'https://cdn.freesound.org/previews/242/242501_3509815-lq.mp3';
+  const negativeSound = 'https://cdn.freesound.org/previews/411/411089_5121236-lq.mp3';
+  
+  const audio = new Audio(isPositive ? positiveSound : negativeSound);
   audio.volume = 0.2;
-  audio.play().catch(e => console.log('Sound play failed:', e));
+  audio.play()
+    .then(() => console.log('Sound played successfully:', isPositive ? 'positive' : 'negative'))
+    .catch(e => console.log('Sound play failed:', e));
 };
 
 const PointsTracker = () => {
@@ -164,12 +168,12 @@ const PointsTracker = () => {
             group.id === id ? { ...group, points: Math.max(0, group.points + amount) } : group
           )
         };
-      } else {
+      } else { // student points adjustment
         const student = classItem.students.find(s => s.id === id);
         if (!student) return classItem;
 
         playPointSound(isPositive);
-        if (student.groupId) playPointSound(isPositive);
+        if (student.groupId) playGroupSound(isPositive); // Play both sounds if student is in a group
 
         return {
           ...classItem,
