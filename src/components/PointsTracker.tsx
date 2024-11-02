@@ -259,27 +259,23 @@ const PointsTracker = () => {
       {currentClass && (
         <>
           {/* Group Points Section */}
-          <Card className="border-2 border-red-800">
-            <CardHeader className="bg-red-50">
-              <CardTitle className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  Group Points - {currentClass.name}
-                </div>
-                <Button
-                  onClick={addGroup}
-                  className="bg-red-700 hover:bg-red-800"
-                >
-                  Add Group
-                </Button>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid md:grid-cols-3 gap-4">
-                {currentClass.groups.map(group => (
+          {currentClass.groups.map(group => (
   <div key={group.id} className="p-4 border-2 border-red-200 rounded-lg bg-white shadow-sm relative overflow-hidden">
     <div className="flex items-center justify-between mb-2">
       {editingType === 'group' && editingId === group.id ? (
-        // ... editing interface remains the same ...
+        <div className="flex gap-2">
+          <Input
+            value={editingName}
+            onChange={(e) => setEditingName(e.target.value)}
+            className="w-40"
+          />
+          <Button onClick={saveEdit} className="bg-green-600">
+            Save
+          </Button>
+          <Button onClick={() => setEditingId(null)} className="bg-red-600">
+            Cancel
+          </Button>
+        </div>
       ) : (
         <h3 className="font-semibold flex items-center gap-1 cursor-pointer hover:text-red-700"
             onClick={() => startEditing(group.id, 'group', group.name)}>
@@ -287,7 +283,6 @@ const PointsTracker = () => {
         </h3>
       )}
       <div className="relative">
-        {/* Points background indicator */}
         <div 
           className="absolute inset-0 bg-red-100 rounded-full transition-all duration-1000 ease-out"
           style={{ 
@@ -296,7 +291,6 @@ const PointsTracker = () => {
             transform: `scale(${1 + group.points * 0.01})` 
           }}
         />
-        {/* Points number with bounce effect */}
         <span className="text-2xl font-bold text-red-800 relative z-10 transition-all duration-300 transform hover:scale-110">
           {group.points}
         </span>
