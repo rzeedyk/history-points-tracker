@@ -16,8 +16,8 @@ import {
 
 const playPointSound = (isPositive: boolean) => {
   const audio = new Audio(isPositive 
-    ? 'public/sounds/gain.mp3'     
-    : 'public/sounds/lose.mp3'
+    ? 'sounds/gain.mp3'     
+    : 'sounds/lose.mp3'
   );
   audio.volume = 0.3;
   audio.play().catch(e => console.log('Sound play failed:', e));
